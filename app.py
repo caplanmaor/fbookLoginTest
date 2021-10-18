@@ -41,7 +41,17 @@ def login_redirect():
     )
     pic_dict = json.loads(pic_json.text)
     pic_url = pic_dict["picture"]["data"]["url"]
-    return redirect(pic_url)
+    r = requests.get(pic_url)
+
+    # write to a file in the app's instance folder
+    with app.open_instance_resource("profile_picture.jpeg", "wb") as f:
+        f.write(r.content)
+    return redirect("/show_profile_pic/")
+
+
+@app.route("/show_profile_pic/", methods=["GET"])
+def show_profile_pic():
+    return render_template("show_pic.html")
 
 
 if __name__ == "__main__":
